@@ -15,7 +15,7 @@
  * @
  * @Author: Archangel 781446156@qq.com
  * @Date: 2024-11-04 20:13:17
- * @LastEditTime: 2024-11-04 20:13:18
+ * @LastEditTime: 2024-11-04 20:53:25
  * @LastEditors: Archangel 781446156@qq.com
  * @Description: 
  * @FilePath: \LANChatRoom\client.h
@@ -29,6 +29,9 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
+#include <arpa/inet.h>  // 用于 inet_pton
+#include <pthread.h>    // 用于 pthread_create
+
 
 #define BUFFSIZE 128
 #define HOST_IP "192.168.159.3"
