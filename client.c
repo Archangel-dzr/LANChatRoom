@@ -15,7 +15,7 @@
  * 
  * @Author: Archangel 781446156@qq.com
  * @Date: 2024-11-04 20:12:37
- * @LastEditTime: 2024-11-04 20:12:48
+ * @LastEditTime: 2024-11-05 09:19:20
  * @LastEditors: Archangel 781446156@qq.com
  * @Description: 
  * @FilePath: \LANChatRoom\client.c
@@ -39,21 +39,22 @@ int main()
     sockfd = socket(AF_INET, SOCK_STREAM, 0); // socket 创建套接字
     if (sockfd < 0)
     {
-        perror("fail to socket");
+        perror("套接字操作失败");
         exit(-1);
     }
     // 与服务器建立连接
-    printf("connecting... \n");
+    printf("连接中。。。 \n");
     if (connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
     {
-        perror("fail to connect");
+        perror("连接服务器失败");
         exit(-2);
     }
 
-    printf("Enter \"login\" to login\n");
-    printf("Enter \"register\" to create an account\n");
-    printf("Enter \"quit\" to quit\n");
-    printf("Enter \"help\" to get more help\n\n");
+    printf("输入 \"login\" 登录\n");
+    printf("输入 \"register\" 建立账户\n");
+    printf("输入 \"quit\" 退出聊天系统\n");
+    printf("输入 \"help\" 获取帮助信息\n");
+    printf("----------------------------\n");
 
     /* === 从此处开始 程序分做两个线程 === */
     // 创建发送消息的线程，调用发送消息的函数snd
@@ -93,19 +94,21 @@ void snd()
 /*获取帮助信息*/
 void get_help()
 {
-    printf("Commands introduction:\n");
-    printf("\t'ls -users':\t\tShow all online users\n");
-    printf("\t'ls -chatrooms':\tShow all chat rooms\n");
-    printf("\t'ls -inrmusr'\t\tShow all online users in chat room you joined\n");
-    printf("\t'send username msg':\tSend a message to the user named 'username' msg:the content of the message\n");
-    printf("\t'join chatroom passwd':\tJoin in a chat room named 'chatroom' with password 'passwd'\n");
-    printf("\t'create chatrname passwd':\tCreate a chat room named 'chatrname' with password 'passwd'\n");
-    printf("\t'chgpsw passwd':\t\tChange your password to 'passwd'\n");
-    printf("\t'send -chatroom msg':\tSend a message to the chat room\n");
-    printf("\t'exit':\t\t\tExit the chat room you joined\n");
-    printf("\t'send -all msg':\tSend a message to all online users\n");
-    printf("\t'login':\t\tLogin chat system\n");
-    printf("\t'register':\t\tCreate an account\n");
-    printf("\t'quit':\t\t\tExit chat system\n");
-    printf("\t'help':\t\t\tGet more help information\n\n");
+    printf("命令介绍:\n");
+    printf("\t'ls -users':\t\t显示所有在线用户\n");
+    printf("\t'ls -chatrooms':\t显示所有聊天室\n");
+    printf("\t'ls -inrmusr':\t\t显示你所在聊天室的所有在线用户\n");
+    printf("\t'send username msg':\t向名为 'username' 的用户发送消息，msg:消息内容\n");
+    printf("\t'join chatroom passwd':\t加入名为 'chatroom' 的聊天室，密码为 'passwd'\n");
+    printf("\t'create chatrname passwd':\t创建名为 'chatrname' 的聊天室，密码为 'passwd'\n");
+    printf("\t'chgpsw passwd':\t\t将你的密码更改为 'passwd'\n");
+    printf("\t'send -chatroom msg':\t向聊天室发送消息\n");
+    printf("\t'exit':\t\t\t退出你所加入的聊天室\n");
+    printf("\t'send -all msg':\t向所有在线用户发送消息\n");
+    printf("\t'login':\t\t登录聊天系统\n");
+    printf("\t'register':\t\t创建一个账户\n");
+    printf("\t'quit':\t\t\t退出聊天系统\n");
+    printf("\t'help':\t\t\t获取更多帮助信息\n\n");
+    printf("---------------------------------------------------------------------------------\n");
 }
+

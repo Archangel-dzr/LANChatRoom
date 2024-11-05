@@ -15,7 +15,7 @@
  * 
  * @Author: Archangel 781446156@qq.com
  * @Date: 2024-11-04 20:14:51
- * @LastEditTime: 2024-11-04 20:24:02
+ * @LastEditTime: 2024-11-05 09:30:09
  * @LastEditors: Archangel 781446156@qq.com
  * @Description: 
  * @FilePath: \LANChatRoom\server.c
@@ -44,13 +44,13 @@ int main()
     listenfd = socket(AF_INET, SOCK_STREAM, 0);
     if (listenfd < 0)
     {
-        perror("fail to socket");
+        perror("创建套接字失败");
         exit(-1);
     }
 
     if (bind(listenfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
     {
-        perror("fail to bind");
+        perror("绑定套接字失败");
         exit(-2);
     }
 
@@ -75,10 +75,10 @@ int main()
         connfd[i] = accept(listenfd, (struct sockaddr *)&cli_addr, &len);
         if (connfd[i] < 0)
         {
-            perror("fail to accept.");
+            perror("接受连接失败");
         }
         timenow = time(NULL);
-        printf("%.24s\n\tconnect from: %s, port %d\n",
+        printf("%.24s\n\t来自: %s, 端口: %d\n",
                ctime(&timenow), inet_ntop(AF_INET, &(cli_addr.sin_addr), buff, BUFFSIZE),
                ntohs(cli_addr.sin_port));
 
@@ -256,14 +256,14 @@ int user_login(int n)
 {
     int len, i, j;
     char buf[BUFFSIZE], username[20], password[20];
-    sprintf(buf, "your username: ");
+    sprintf(buf, "用户名: ");
     write(connfd[n], buf, strlen(buf) + 1);
     len = read(connfd[n], username, 20);
     if (len > 0)
     {
         username[len - 1] = '\0'; // 去除换行符
     }
-    sprintf(buf, "your password: ");
+    sprintf(buf, "登录密码: ");
     write(connfd[n], buf, strlen(buf) + 1);
     len = read(connfd[n], password, 20);
     if (len > 0)
@@ -277,7 +277,7 @@ int user_login(int n)
         {
             if (strcmp(password, users[i].password) == 0)
             {
-                sprintf(buf, "Login successfully.\n\n");
+                sprintf(buf, "登录成功.\n\n");
                 write(connfd[n], buf, strlen(buf + 1));
                 for (j = 0; j < MAXMEM; j++)
                 {
@@ -291,13 +291,13 @@ int user_login(int n)
             }
             else
             {
-                sprintf(buf, "Wrong password.\n\n");
+                sprintf(buf, "密码错误.\n\n");
                 write(connfd[n], buf, strlen(buf + 1));
                 return -1;
             }
         }
     }
-    sprintf(buf, "Account does not exist.\n\n");
+    sprintf(buf, "用户名不存在.\n\n");
     write(connfd[n], buf, strlen(buf + 1));
     return -1;
 }
@@ -307,14 +307,14 @@ void register_user(int n)
 {
     int len, i;
     char buf[BUFFSIZE], username[20], password[20];
-    sprintf(buf, "your username: ");
+    sprintf(buf, "用户名： ");
     write(connfd[n], buf, strlen(buf) + 1);
     len = read(connfd[n], username, 20);
     if (len > 0)
     {
         username[len - 1] = '\0'; // 去除换行符
     }
-    sprintf(buf, "your password: ");
+    sprintf(buf, "密码： ");
     write(connfd[n], buf, strlen(buf) + 1);
     len = read(connfd[n], password, 20);
     if (len > 0)
@@ -325,7 +325,7 @@ void register_user(int n)
     {
         if (strcmp(users[i].username, username) == 0)
         {
-            strcpy(buf, "The username already exists.\n\n");
+            strcpy(buf, "用户名已存在.\n\n");
             write(connfd[n], buf, strlen(buf) + 1);
             return;
         }
@@ -333,7 +333,7 @@ void register_user(int n)
     strcpy(users[user_count].username, username);
     strcpy(users[user_count].password, password);
     user_count++;
-    sprintf(buf, "Account created successfully.\n\n");
+    sprintf(buf, "注册成功.\n\n");
     write(connfd[n], buf, strlen(buf) + 1);
 }
 
@@ -362,18 +362,18 @@ void send_private_msg(char *username, char *data, int sfd)
         {
             strcpy(buf, nowtime);
             strcat(buf, "\t");
-            strcat(buf, "from ");
+            strcat(buf, "来自 ");
             strcat(buf, send_man);
             strcat(buf, ":\n");
             strcat(buf, data);
             strcat(buf, "\n");
             write(connfd[online_users[i].socketfd], buf, strlen(buf) + 1);
-            strcpy(temp, "Sent successfully.\n");
+            strcpy(temp, "发送成功.\n");
             write(connfd[sfd], temp, strlen(temp) + 1);
             return;
         }
     }
-    strcpy(buf, "User is not online or user does not exist.\n");
+    strcpy(buf, "用户不在线或用户不存在.\n");
     write(connfd[sfd], buf, strlen(buf) + 1);
     return;
 }
@@ -409,7 +409,7 @@ void send_all_msg(char *msg, int sfd)
             write(connfd[i], buf, strlen(buf) + 1);
         }
     }
-    strcpy(temp, "Sent successfully\n");
+    strcpy(temp, "发送成功\n");
     write(connfd[sfd], temp, strlen(temp) + 1);
 }
 
@@ -424,7 +424,7 @@ void get_online_users(int sfd)
     strftime(nowtime, 20, "[%H:%M:%S]", tempTime);
     strcpy(buf, nowtime);
     strcat(buf, "\t");
-    strcat(buf, "All online user(s):\n");
+    strcat(buf, "所有在线用户:\n");
     for (i = 0; i < MAXMEM; i++)
     {
         if (online_users[i].status == 0)
@@ -468,7 +468,7 @@ void send_chatroom_msg(char *msg, int sfd)
     }
     if (flag == -1)
     {
-        strcpy(buf, "You have not joined the chat room.\n");
+        strcpy(buf, "你还没有加入聊天室.\n");
         write(connfd[sfd], buf, strlen(buf) + 1);
     }
     else
@@ -480,9 +480,9 @@ void send_chatroom_msg(char *msg, int sfd)
                 break;
         }
         strcpy(buf, nowtime);
-        strcat(buf, "\tchatroom ");
+        strcat(buf, "\t聊天室 ");
         strcat(buf, chatrooms[i].name);
-        strcat(buf, ":\nfrom ");
+        strcat(buf, ":\n来自 ");
         strcat(buf, online_users[k].username);
         strcat(buf, ":\t");
         strcat(buf, msg);
@@ -516,7 +516,7 @@ void create_chatroom(char *name, char *passwd, int sfd)
             break;
     }
     chatrooms[i].user[j] = sfd;
-    strcpy(buf, "Successfully created chat room.\n");
+    strcpy(buf, "创建聊天室成功.\n");
     write(connfd[sfd], buf, strlen(buf) + 1);
 }
 
@@ -540,7 +540,7 @@ void join_chatroom(char *name, char *passwd, int sfd)
     }
     if (flag == 0)
     {
-        strcpy(buf, "You have joined the chat room ");
+        strcpy(buf, "你已经加入了聊天室.\n ");
         strcat(buf, chatrooms[room].name);
         strcat(buf, ".\n");
         write(connfd[sfd], buf, strlen(buf) + 1);
@@ -563,13 +563,13 @@ void join_chatroom(char *name, char *passwd, int sfd)
                             }
                         }
                         chatrooms[i].user[j] = sfd;
-                        strcpy(buf, "Successfully joined the chat room.\n");
+                        strcpy(buf, "加入聊天室成功.\n");
                         write(connfd[sfd], buf, strlen(buf) + 1);
                         return;
                     }
                     else
                     {
-                        strcpy(buf, "Incorrect chat room password.\n");
+                        strcpy(buf, "错误的聊天室密码.\n");
                         write(connfd[sfd], buf, strlen(buf) + 1);
                         return;
                     }
@@ -589,7 +589,7 @@ void get_online_chatrooms(int sfd)
     struct tm *tempTime = localtime(&now);
     strftime(nowtime, 20, "[%H:%M:%S]", tempTime);
     strcpy(buf, nowtime);
-    strcat(buf, "\tAll online chat room(s):\n");
+    strcat(buf, "\t所有已创建的聊天室:\n");
     for (i = 0; i < MAXROOM; i++)
     {
         if (chatrooms[i].status == 0)
@@ -620,7 +620,7 @@ void change_passwd(int sfd, char *passwd)
         if (strcmp(name, users[i].username) == 0)
         {
             strcpy(users[i].password, passwd);
-            strcpy(buf, "Password has been updated.\n");
+            strcpy(buf, "密码修改成功.\n");
             write(connfd[sfd], buf, strlen(buf) + 1);
             break;
         }
@@ -651,14 +651,15 @@ void get_inroom_users(int sfd)
     }
     if (flag == -1)
     {
-        strcpy(buf, "Sorry, you have not joined the chat room.\n");
+        strcpy(buf, "抱歉，你还没有加入任何聊天室.\n");
         write(connfd[sfd], buf, strlen(buf) + 1);
     }
     else
     {
         strcpy(buf, nowtime);
-        strcat(buf, "\tAll users in the ");
+        strcat(buf, "\t所有加入");
         strcat(buf, chatrooms[room].name);
+        strcat(buf, "的用户");
         strcat(buf, ":\n");
         for (i = 0; i < 10; i++)
         {
@@ -704,12 +705,12 @@ void exit_chatroom(int sfd)
     }
     if (flag == -1)
     {
-        strcpy(buf, "You have not joined the chat room.\n");
+        strcpy(buf, "你还没有加入任何聊天室.\n");
         write(connfd[sfd], buf, strlen(buf) + 1);
     }
     else
     {
-        strcpy(buf, "Successfully quit chat room ");
+        strcpy(buf, "你已退出聊天室 ");
         strcat(buf, chatrooms[room].name);
         strcat(buf, ".\n");
         write(connfd[sfd], buf, strlen(buf) + 1);
@@ -727,7 +728,7 @@ void quit()
         if (strcmp(msg, "quit") == 0)
         {
             save_users();
-            printf("Byebye... \n");
+            printf("再见！ \n");
             close(listenfd);
             exit(0);
         }
@@ -738,6 +739,6 @@ void quit()
 void invalid_command(int sfd)
 {
     char buf[BUFFSIZE];
-    strcpy(buf, "Invalid command.\n");
+    strcpy(buf, "无效的命令.\n");
     write(connfd[sfd], buf, strlen(buf) + 1);
 }
