@@ -15,7 +15,7 @@
  * 
  * @Author: Archangel 781446156@qq.com
  * @Date: 2024-11-04 20:12:37
- * @LastEditTime: 2024-11-05 09:19:20
+ * @LastEditTime: 2024-11-05 09:44:36
  * @LastEditors: Archangel 781446156@qq.com
  * @Description: 
  * @FilePath: \LANChatRoom\client.c
@@ -43,7 +43,7 @@ int main()
         exit(-1);
     }
     // 与服务器建立连接
-    printf("连接中。。。 \n");
+    printf("连接中... \n");
     if (connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
     {
         perror("连接服务器失败");
@@ -54,7 +54,7 @@ int main()
     printf("输入 \"register\" 建立账户\n");
     printf("输入 \"quit\" 退出聊天系统\n");
     printf("输入 \"help\" 获取帮助信息\n");
-    printf("----------------------------\n");
+    printf("--------------------------------------------------------------------------------\n");
 
     /* === 从此处开始 程序分做两个线程 === */
     // 创建发送消息的线程，调用发送消息的函数snd
@@ -109,6 +109,8 @@ void get_help()
     printf("\t'register':\t\t创建一个账户\n");
     printf("\t'quit':\t\t\t退出聊天系统\n");
     printf("\t'help':\t\t\t获取更多帮助信息\n\n");
-    printf("---------------------------------------------------------------------------------\n");
+    printf("注意:\n");
+    printf("\t1. 输入命令时，末尾请不要输入空格，输入命令时请用英文输入法，不要使用中文输入法。\n");
+    printf("--------------------------------------------------------------------------------\n");
 }
 

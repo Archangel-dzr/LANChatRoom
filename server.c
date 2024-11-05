@@ -34,7 +34,7 @@ int main()
     pthread_t thread;
     char buff[BUFFSIZE];
 
-    printf("Running...\nEnter command \"quit\" to exit server.\n\n");
+    printf("Running...\n输入指令 \"quit\"以退出程序.\n\n");
 
     bzero(&serv_addr, sizeof(struct sockaddr_in));
     serv_addr.sin_family = AF_INET;
